@@ -1,67 +1,80 @@
 import React from 'react';
 import {useState,useEffect} from 'react';
+import { addToDb, getStoredCart } from '../../utilities/fakedb';
+import Cart from '../Cart/Cart';
 import Item from '../Item/Item';
 import './Shop.css';
 const Shop = () => {
     const [products, setProducts] = useState([]);
+    const[cart,setCart]=useState([]);
+    const[searchProducts, SetSearchProducts]=useState([]);
 
     useEffect(() => {
         fetch('./products.JSON')
         .then(res=>res.json())
-        .then(data=>setProducts(data));
+        .then(data=>{
+            setProducts(data);
+            SetSearchProducts(data);
+        });
 
     },[]);
+    useEffect(()=>{
+        const saveCart = getStoredCart();
+        const storedCart = [];
+        if(products.length){
+            for(const key in saveCart){
+                const addedProducts = products.find (product=>product.key===key);
+                if(addedProducts){
+                    const quantity = saveCart[key];
+                    addedProducts.quantity=quantity;
+                    storedCart.push(addedProducts);
+                    
+                }
+                
+        }
+        setCart(storedCart);
+        }
+    },[products])
 
+    const handleAddCart =(product)=>{
+        const newCart=[...cart, product];
+        setCart(newCart);
+        //save to local storage
+        addToDb(product.key);   
+    }
+
+        const handleSearch=event=>{
+            const searchText = event.target.value;
+            const matchedProduct = products.filter(product=> product.name.toLowerCase().includes(searchText.toLowerCase()));
+            SetSearchProducts(matchedProduct);
+            console.log(matchedProduct);
+
+        }
     return (
+        <>
+        <div>
+        <form className='search-bar'action="#" type="post">
+                    <div className="search">    
+                        <input type="search" onChange={handleSearch} placeholder="Search" /><input type="submit" value=""/>
+                        <span className="entypo-search"></span>   
+                     </div> 
+                     <div className='cart-item'>
+                         <h5>No. of Items  : <span> 0 </span></h5>
+                         <h5>Sub total  : <span> 0 </span></h5>
+                     </div>
+                </form>
+        </div>
+         
         <div className='main-section'>
             <div>
-            {
-            products.map(product=> <Item key={product.key} product={product}></Item>)
-        }
+                {
+                searchProducts.map(product=> <Item key={product.key} product={product} quantity={cart.quantity} handleAddCart={handleAddCart
+                }> </Item>)
+                }
             </div>
-        
-             <aside>
-                <div className="items-summery">
-                <div className="summary">
-                    <div className="summary-total-items"><span className="total-items"></span> Items in your Bag</div>
-                    <div className="summary-subtotal">
-                        <div className="subtotal-title">Subtotal</div>
-                         <div className="subtotal-value final-value" id="basket-subtotal">130.00</div>
-                        <div className="summary-promo hide">
-                            <div className="promo-title">Promotion</div>
-                            <div className="promo-value final-value" id="basket-promo"></div>
-                        </div>
-                    </div>
-                    <div className="summary-delivery">
-                        <select name="delivery-collection" className="summary-delivery-selection">
-                            <option value="0" selected="selected">Select Collection or Delivery</option>
-                            <option value="collection">Collection</option>
-                            <option value="first-className">Royal Mail 1st className</option>
-                            <option value="second-className">Royal Mail 2nd className</option>
-                            <option value="signed-for">Royal Mail Special Delivery</option>
-                        </select>
-                    </div>
-                    <div className="summary-total">
-                         <div className="total-title">Total</div>
-                        <div className="total-value final-value" id="basket-total">130.00</div>
-                    </div>
-                    <div className="summary-checkout">
-                        <button className="checkout-cta">Go to Secure Checkout</button>
-                    </div>
-                </div>
-                <div className="basket-module">
-                    <label for="promo-code">Enter a promotional code
-                    </label>
-                    <input id="promo-code" type="text" name="promo-code" className="promo-code-field"/>
-                    <button className="promo-code-cta">Apply</button>
-                </div>
-                </div>
-                
-          
-            </aside>
+                <Cart cart={cart} ></Cart>
         </div>
-      
-      
+        </>
     );
 };
 

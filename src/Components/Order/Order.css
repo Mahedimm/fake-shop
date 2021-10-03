@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
+
+.shopping-cart {
+    width: 50.33%;
+    
+    box-sizing: border-box;
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+  }
+
+  .shopping-cart {
+    position: relative;
+    padding: 20px;
+  }
+  
+  .shopping-cart-product {
+    margin-bottom: 10px;
+  }
+  
+  .product-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid black;
+    padding: 10px;
+    width: 100%;
+    box-shadow: 0 15px 30px 0 rgba(0,0,0,.11), 0 5px 15px 0 rgba(0,0,0,.08);
+    border-radius: 5px;
+  }
+  
+  .product-info img {
+    width: 200px;
+    height: 200px;
+    padding-right: 5px;
+  }
+  
+  .product-info div h3{
+    font-weight: 200px;
+    margin-bottom: -10px;
+  }
+  
+  .product-count {
+    font-weight: bold;
+    font-size: 18px;
+    display: inline-block;
+    background: #fff;
+    padding: 10px;
+    border: 1px solid black;
+    box-shadow: 0 15px 30px 0 rgba(0,0,0,.11), 0 5px 15px 0 rgba(0,0,0,.08);
+    margin-top: -30px;
+  }
+  
+  .product-count button {
+    cursor: pointer;
+    background: #ffac3e;
+    border: 2px solid #eee;
+    border-radius: 3px;
+    float:none;
+    
+    font-weight: bold;
+    font-size: 16px;
+  }
